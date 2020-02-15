@@ -7,46 +7,14 @@ require('isomorphic-fetch');
 require('shelljs/global');
 
 /*
+note
 api網址 https://g0v.github.io/blood/blood.json
-response:
-{
-  "time": "2020-02-13T22:16:25+08:00",
-  "台北捐血中心": {
-    "name": "台北捐血中心",
-    "StorageA": "medium",
-    "StorageB": "medium",
-    "StorageO": "medium",
-    "StorageAB": "medium"
-  },
-  "新竹捐血中心": {
-    "name": "新竹捐血中心",
-    "StorageA": "medium",
-    "StorageB": "medium",
-    "StorageO": "medium",
-    "StorageAB": "full"
-  },
-  "台中捐血中心": {
-    "name": "台中捐血中心",
-    "StorageA": "full",
-    "StorageB": "full",
-    "StorageO": "medium",
-    "StorageAB": "full"
-  },
-  "台南捐血中心": {
-    "name": "台南捐血中心",
-    "StorageA": "medium",
-    "StorageB": "medium",
-    "StorageO": "medium",
-    "StorageAB": "full"
-  },
-  "高雄捐血中心": {
-    "name": "高雄捐血中心",
-    "StorageA": "medium",
-    "StorageB": "medium",
-    "StorageO": "medium",
-    "StorageAB": "medium"
-  }
-}
+如果只是回傳json格式, 那為啥要寫檔?
+=>
+喔喔, 他是每天呼叫一次, 寫在json檔
+然後網址是打開那個json檔
+所以json檔等於是備份就是了
+不用每一次打開url都爬一次資料
 */
 
 module.exports.fetch = (event, context, callback) => {
@@ -92,7 +60,8 @@ module.exports.fetch = (event, context, callback) => {
      */
     mkdir('-p', 'out');
 
-    // to function看起來是寫檔, 不過找不到文件
+    // to function是寫檔, 在shelljs塞到String的prototype, 操!!
+    // 這種亂塞prototype的方式真的很難維護
     JSON.stringify(json, null, 2).to('out/blood.json');
     callback(null, json);
   })
